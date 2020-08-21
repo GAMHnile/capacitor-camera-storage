@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   IonPage,
   IonHeader,
@@ -11,10 +11,19 @@ import {
   IonFabButton,
   IonIcon,
   IonButton,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
 } from "@ionic/react";
 import { add } from "ionicons/icons";
 
+import MemoriesContext from "../data/memories-context";
+
 const GoodMemories: React.FC = () => {
+  const memoriesCtx = useContext(MemoriesContext);
   return (
     <IonPage>
       <IonHeader>
@@ -23,16 +32,37 @@ const GoodMemories: React.FC = () => {
           {isPlatform("ios") && (
             <IonButtons slot="end">
               <IonButton routerLink="/new-memory">
-                <IonIcon slot='icon-only' icon={add} />
+                <IonIcon slot="icon-only" icon={add} />
               </IonButton>
             </IonButtons>
           )}
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <h2>Hello from Good memories </h2>
+        <IonGrid>
+          {memoriesCtx.memories.length === 0 && (
+            <IonRow className="ion-text-center">
+              <IonCol>
+                <h2>No good memories found</h2>
+              </IonCol>
+            </IonRow>
+          )}
+          {!!memoriesCtx.memories.length &&
+            memoriesCtx.memories.map((memory) => (
+              <IonRow key={memory.id}>
+                <IonCol>
+                  <IonCard>
+                    <img src={memory.base64Url} alt={memory.title} />
+                    <IonCardHeader>
+                      <IonCardTitle>{memory.title}</IonCardTitle>
+                    </IonCardHeader>
+                  </IonCard>
+                </IonCol>
+              </IonRow>
+            ))}
+        </IonGrid>
         {!isPlatform("ios") && (
-          <IonFab vertical="bottom" horizontal="end">
+          <IonFab vertical="bottom" horizontal="end" slot="fixed">
             <IonFabButton routerLink="/new-memory">
               <IonIcon icon={add} />
             </IonFabButton>
