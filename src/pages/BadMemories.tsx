@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {
   IonPage,
   IonHeader,
@@ -7,15 +7,22 @@ import {
   IonContent,
   isPlatform,
   IonButtons,
-  IonFab,
-  IonFabButton,
   IonIcon,
   IonButton,
+  IonGrid,
+  IonRow,
+  IonCol
 } from "@ionic/react";
 
 import { add } from "ionicons/icons";
+import Fab from "../components/Fab";
+import MemoriesList from '../components/MemoriesList';
+
+import MemoriesContext from '../data/memories-context';
 
 const BadMemories: React.FC = () => {
+  const memoriesCtx = useContext(MemoriesContext);
+  const badMemories = memoriesCtx.memories.filter(mem=> mem.type === 'bad');
   return (
     <IonPage>
       <IonHeader>
@@ -31,14 +38,19 @@ const BadMemories: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <h2>Hello from Bad memories </h2>
-        {!isPlatform("ios") && (
-          <IonFab vertical="bottom" horizontal="end" slot="fixed">
-            <IonFabButton routerLink="/new-memory">
-              <IonIcon icon={add} />
-            </IonFabButton>
-          </IonFab>
-        )}
+      <IonGrid>
+          {badMemories.length === 0 && (
+            <IonRow className="ion-text-center">
+              <IonCol>
+                <h2>No Bad memories found</h2>
+              </IonCol>
+            </IonRow>
+          )}
+          {!!badMemories.length &&
+            <MemoriesList memories={badMemories} />
+           }
+        </IonGrid>
+        {!isPlatform("ios") && <Fab link="/new-memory" />}
       </IonContent>
     </IonPage>
   );
