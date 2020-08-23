@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { Plugins, Filesystem, FilesystemDirectory } from "@capacitor/core";
+import { base64FromPath } from "@capacitor-community/react-hooks/filesystem";
 
-import MemoriesContext, { Memory } from "./memories-context";
+import MemoriesContext, { Memory, MemoryType } from "./memories-context";
+import { Photo } from "../components/ImagePicker";
 
 const { Storage } = Plugins;
 const MemoriesContextProvider: React.FC = (props) => {
@@ -20,16 +22,22 @@ const MemoriesContextProvider: React.FC = (props) => {
     });
   }, [memories]);
 
-  const addMemory = (
+  const addMemory =async (
     title: string,
-    base64: string,
-    imagePath: string,
-    type: "good" | "bad"
+    takenPhoto: Photo,
+    type: MemoryType
   ) => {
+    const filePath = new Date().getTime() + ".jpeg";
+    const base64 = await base64FromPath(takenPhoto.preview);
+    await Filesystem.writeFile({
+      path: filePath,
+      data: base64,
+      directory: FilesystemDirectory.Data,
+    });
     const newMemory: Memory = {
       id: Math.random().toString(),
       title,
-      imagePath,
+      imagePath: filePath,
       type,
       base64Url: base64,
     };

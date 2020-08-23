@@ -1,6 +1,6 @@
 {
   "appId": "memories.netlifyApp.kodeWorld",
-  "appName": "ionic-react",
+  "appName": "My-memories",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "build",
